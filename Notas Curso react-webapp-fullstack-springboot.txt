@@ -1,0 +1,17 @@
+
+	****** 	React: Creando webapp Full Stack con Spring Boot 2024	*******
+
+## Crear proyecto de React con Vite:
+Crear carpeta: intro-javascript -> arrastrarla a VSC -> abrir terminal y ejecutar:
+	npm create vite@latest	// elegir Y -> dar nombre a proyecto: "intro-js" -> 
+elegir React -> elegir JavaScript -> Listo.
+
+## Abrir proyecto de react:
+	Entrar a la ruta del proyecto: cd intro-js  
+  -- Instalar las dependencias del package.json ejecutar dentro de la carpeta intro-js: 
+esto genera la carpeta node_modules
+	npm install  -> ejecutar para levantar la app -> npm run dev
+
+
+
+
