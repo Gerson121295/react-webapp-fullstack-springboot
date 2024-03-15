@@ -13,5 +13,26 @@ esto genera la carpeta node_modules
 	npm install  -> ejecutar para levantar la app -> npm run dev
 
 
+// Ejemplo de crear proyecto de React usando Vite
+PS C:\Users\Escritorio\react-webapp-fullstack-springboot> npm create vite@latest
+√ Project name: ... 2-intro-react   //definir nombre del proyecto
+√ Select a framework: » React		//Elegir React
+√ Select a variant: » JavaScript	//Elegir JavaScript
+
+Done. Now run:    
+  cd 2-intro-react	//Entrar a la carpeta del proyecto creado
+  npm install     	//Instalar las dependencias
+  npm run dev 		//Levantar el proyecto
+
+
+
+//Notas:
+//Configurando PropTypes para validaciones de las propiedades para que el tipo de dato que se espera sea el correcto
+//para esto se debe instalar la dependencia: npm install prop-types
+//Validacion para verificar si las variables de parametros definidad en la funcion viene de la 
+clase padre, o asignar valores por defecto
+
+
+
 
 

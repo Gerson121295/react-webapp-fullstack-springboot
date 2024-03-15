@@ -9,7 +9,7 @@
 //API a consumir: https://jsonplaceholder.typicode.com/users
 //Fetch por defecto es de JavaScript y fetch y json() son una promesa por lo cual se tiene que manejar con then 
 
-    const httpClient = fetch('https://jsonplaceholder.typicode.com/users');
+    //const httpClient = fetch('https://jsonplaceholder.typicode.com/users');
 
     //Forma 1: Metodo para listar la data o los usuarios
     /*
