@@ -32,6 +32,97 @@ Done. Now run:
 //Validacion para verificar si las variables de parametros definidad en la funcion viene de la 
 clase padre, o asignar valores por defecto
 
+Ejemplo de como usarlo: 
+import PropTypes from 'prop-types';
+
+UserNombreDeLaClase.propTypes = {
+    id: PropTypes.number.isRequired,
+    user: PropTypes.object.isRequired,
+}
+
+//Establecer valores por defecto a las props o parametros en la funcion, datos viene de la clase padre(main.jsx)
+//Los valores por defecto solo se aplican si no vienen los valores desde la clase padre, siempre tiene  prioridad la clase padre.
+//Primero se agrega los valores por defecto en caso que no vengan los valores y despues se valida el tipo de dato sea el correcto
+HelloWorldApp.defaultProps = {
+    title: 'Hola mundo por defecto!',
+    book: 'UML got a gota'
+}
+
+
+
+/// Creando Proyect InvoiceApp - Vite + React
+
+-- npm create vite //Crear el proyecto
+Need to install the following packages:
+create-vite@5.2.2
+Ok to proceed? (y) y    //Escribimos Y
+√ Project name: ... 4-invoice-app   //Escribimos nombre del proyecto
+√ Select a framework: » React		//Elegimos React como Framework a usar
+√ Select a variant: » JavaScript	//Elegimos JavaScript
+
+  cd 4-invoice-app  //Entramos al proyecto creado
+  npm install     //Instalamos las dependencias del proyecto.
+  npm run dev	//Levantamos el proyecto
+ 
+-- Agregar BootStrap al proyecto
+
+Ir a https://getbootstrap.com/  --> Descargas --> copiar(menos el script) los CDN via jsDelivr 
+-->  pegar el CDN en el index.html dentro de la etiqueta head. 
+y tambien copiar el script popperjs dentro del body (sirve para menus desplegables)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
