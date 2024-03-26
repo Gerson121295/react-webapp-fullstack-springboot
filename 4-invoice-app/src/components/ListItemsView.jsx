@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import {RowItemView} from "./RowItemView"
 
-export const ListItemsView = ({title, items}) => { //recibe props del padre InvoiceApp
+export const ListItemsView = ({title, items, handlerDeleteItem }) => { //recibe props del padre InvoiceApp
     return(
         <>
          <h4>{title}</h4>
@@ -11,6 +11,7 @@ export const ListItemsView = ({title, items}) => { //recibe props del padre Invo
                                 <th>Producto</th>
                                 <th>Precio</th>
                                 <th>Cantidad</th>
+                                <th>Eliminar</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -33,7 +34,17 @@ export const ListItemsView = ({title, items}) => { //recibe props del padre Invo
                         {items.map(({id, product, price, quantity}) => {  //incluso podemos quitar las llaves y el return solo dejar el parentesis(tr) esto porque el tr es una sola etiqueta
                             return(
                             //Llama y se envia datos al componente Hijo RowItemView que tiene las lineas de la factura
-                            <RowItemView key={id} product={product} price={price} quantity={quantity} />
+                            //Del componente padre(ListItemsView) que recibio de su padre(InvoiceApp) envia a su hijo RowItemView la funcion para eliminar un item de la factura
+                            <RowItemView 
+                                key={id} 
+                                id={id}
+                                product={product} 
+                                price={price} 
+                                quantity={quantity} 
+                                //Funcion para eliminar un item
+                                handlerDeleteItem = {id => handlerDeleteItem(id)} 
+                            />
+
                             )
                         })}
                     </tbody>
@@ -44,5 +55,6 @@ export const ListItemsView = ({title, items}) => { //recibe props del padre Invo
 
 ListItemsView.propTypes={
     title: PropTypes.string.isRequired,
-    items: PropTypes.array.isRequired
+    items: PropTypes.array.isRequired,
+    handlerDeleteItem: PropTypes.func
 }

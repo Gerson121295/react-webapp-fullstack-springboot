@@ -6,6 +6,7 @@ import { InvoiceView } from "./components/InvoiceView";
 import { ListItemsView } from "./components/ListItemsView";
 import { TotalView } from "./components/TotalView";
 import { useEffect, useState } from "react";
+import { FormItemsView } from "./components/FormItemsView";
 
 const invoiceInitial = {
     id: 0,
@@ -30,14 +31,16 @@ const invoiceInitial = {
 
 export const InvoiceApp = () => {
 
+    //UseState Boton para mostrar u ocultar el formulario, se inicializa en false
+    const[activeForm, setActiveForm] = useState(false);
+
     //UseState para incrementar contador del id de producto
     const[counter, setCounter] = useState(4); //incializa en 4
 
     //Factura sea manejada por el estado de react
     const [invoice, setInvoice] = useState(invoiceInitial); //El estado inicial del useState es la estructura o el json de la factura
         
-
-    //Estado para guardar los item en la pagina
+    //Estado para guardar los nuevos items en la pagina
     const[items, setItems] = useState([]); //items de la factura, inicializa con itemsInitial que es el alias de los items que viene de getInvoice de la factura.
  
     //Esta forma de obtener la factura afecta en el rendimiento por cada cambio en el estado del campo hace una llamada y se necesita que al llenar el campo haga solo 1 llamada.
@@ -59,28 +62,6 @@ export const InvoiceApp = () => {
     //Desestructurar el objeto address de client obtenido de invoice() y se guarda la data en las variables: country, city, street, number 
     //const{ country, city, street, number } = address; 
 
-    
-    //El UseState sirve  para guardar el estado "datos" de los campos del formulario para crear producto
-     
-    //useState('') devuelve 1 arreglo con 2 cosas: el productValue que es un arreglo con nuestra data, 
-    //y setProductValue una funcion para modificar el estado del productValue,
-    //useState('') recibe de parametro el cual sera su valor inicial o por defecto es 'vacio' nada como es string Product
-/* 
-    const [productValue, setProductValue] = useState(''); //campo Product, se inicializa en vacio '' 
-    const [priceValue, setPriceValue] = useState(''); //campo Price
-    const [quantityValue, setQuantityValue] = useState(''); //campo Quantity
-*/
-    //Un solo estado para el formulario - useState invoiceItemsState Hace la funcionalidad de los useState: product, price, quantity
-    const[formItemsState, setFormItemsState] = useState({
-        //Datos que pueblan en el formulario
-        product: '',
-        price: '',
-        quantity:'',
-    });
-
-    //Desestructuracion del objeto useState formItemsState y guarda los datos en las variables: product, price, quantity
-    const {product, price, quantity} = formItemsState;
-
     //Este componente solo se ejecuta una vez cuando se crea el componente. Obtendra las facturas
     useEffect(() => {
         const data = getInvoice(); //variable data guarda los datos de factura que se optiene por la clase service getInvoice()
@@ -89,20 +70,6 @@ export const InvoiceApp = () => {
         setItems(data.items);
     }, []); //el [] vacio sig. que este efecto secundario (evento) del ciclo de vida cuando se crea el componente
 
-
-        useEffect(() => {
-            console.log('El precio cambio');
-
-        }, [price]) //este useEffect se ejecuta cuando el estado del campo precio cambia
-
-
-        //useEffect se ejecuta cuando cambia cualquier estado del campo del formulario
-        useEffect(() => {
-            console.log('El form cambio');
-
-        }, [formItemsState]) //Se define el campo "formItemsState" condicion para ejecutar el useEffect
-
-
        //useEffect para cuando cambie la cantidad de items se recalcula el total
         useEffect(() => {
             setTotal(calculateTotal(items)); //Modifica el total con setTotal llama la funcion calculateTotal y le pasa los items para que calcule el total
@@ -110,89 +77,33 @@ export const InvoiceApp = () => {
         }, [items]) //Se define el campo "items" condicion para ejecutar el useEffect
 
 
- /*   //Reduccion de estas 3 funciones a una sola 
-    //Funcion para cambiar el evento del producto usando Event sin desestructurarlo
-    const onProductChange = (event) => {
-        console.log(event.target.value) //value es el valor, el target es el campo.
-        setProductValue(event.target.value); //Se guarda el valor(value) que aparece en el campo(target) product
-    }
+        //funcion para agregar nuevos items a la factura.
+        const handlerAddItems = ({ product, price, quantity }) => {
+          setItems([
+            ...items,
+            {
+              //a items, le agregas el nuevo objeto
+              id: counter, //el id se incrementa con el dato del contador
+              product: product.trim(), //.trim() quita los espacios antes y despues
+              price: +price.trim(), //forma 1: de convertir un dato String(se recibe del Formulario) a tipo numerico agregarle antes el signo: "+"
+              quantity: parseInt(quantity.trim(), 10), //forma 2. de convertir un dato String(se recibe del Formulario) a tipo numerico con parseInt(recibe el valor, 10Base10)
+            },
+          ]); //product (varlor del campo de invoice) productValue(variable del useState)
 
-    //Funcion para cambiar el evento del precio, desestructurando event y dejar target
-    const onPriceChange = ({ target }) =>{ //desestructuracion de event y extraer {target} del obejto event
-        console.log(target.value)//value es el valor, el target es el campo.
-        setPriceValue(target.value); //Se guarda el valor(value) que aparece en el campo(target) price
-    }
+          setCounter(counter + 1); //incrementa el valor del conunter en 1
+        };
 
-    //Funcion para cambiar el evento de la cantidad
-    const onQuantityChange = ({ target }) =>{ //desestructuracion de event y extraer {target} del obejto event
-        console.log(target.value)//value es el valor, el target es el campo.
-        setQuantityValue(target.value); //Se guarda el valor(value) que aparece en el campo(target) quantity
-    }
-*/
+        //Funcion para eliminar un item
+        const handlerDeleteItem = (id) => { //pasamos como argumento el id del item a eliminar
+            //filter devuelve un nuevo arreglo sin el id que se envia como parametro por lo que en el nuevo arreglo ese id de ese item estaria eliminado.
+            setItems(items.filter(item => item.id !== id)) //en item validamos que el id a buscar no se incluya en el nuevo arreglo
+        }
 
-        //Funcion para modificar el estado completo del campo. cambiar el evento del los campos product, price y quantity del formulario 
-        const onInputChange = ({ target:{ name, value }}) => { //Del objeto event se destructuro el target y del target(campo del form) se desetructuro el name y value
-            //console.log(name) //value es el valor del campo, el target es el campo.
-            //console.log(value)
+        //Funcion cambia el estado del boton usando el useState, si esta false cambia true o viceversa
+        const onActiveForm = () => {
+            setActiveForm(!activeForm); //cambia el valor de activeForm si esta false cambia true o viceversa
+        }
 
-            setFormItemsState({ //cambiamos el estado del campo
-                ...formItemsState, //el arreglo que no se esta modificando
-                [name]:value //el campo que se esta modificando, name es el nombre del campo del input del form
-       });
-    }
-
-
-    const onInvoiceItemsSubmit = (event) => {
-
-        //Debido al useState general para campos del form a todos los campos que llevaban value se elimino value. productValue, priceValue, quantityValue
-            event.preventDefault(); // preventDefault() permite que el formulario no se envie
-            //mantenemos datos "los objetos" que se tenia de items y vamos a crear un nuevo objeto con los datos del estado que tiene los 
-            //valores de productValue, priceValue, quantityValue esto asignado valores de las variables de los campos de la factura invoice
-            
-            //Validacion de los campos del formulario no vallan vacios: Antes productValue
-            if(product.trim().length <=1 ) return; //Trim quita espacio, el nombre del producto debe tener mas de 1 caracter
-            if(price.trim().length <=1 ) return;
-            if(isNaN(price.trim())) { //isNaN is not a number
-                alert('Error el precio no es un numero')
-                return;
-            }
-
-            if(quantity.trim().length <1){ //quantityValue
-                alert('Error la cantidad tiene que ser mayor a 0')
-                return;
-            } 
-            //if(isNaN(quantityValue.trim())) return; //isNaN is not a number
-            if(isNaN(quantity.trim())) { //isNaN is not a number
-                alert('Error el precio no es un numero')
-                return;
-            }
-
-
-            setItems([...items, {  //a items, le agregaos el nuevo objeto
-                id: counter,  //el id se incrementa con el dato del contador
-                product:product.trim(), //.trim() quita los espacios antes y despues 
-                price: +price.trim(), //forma 1: de convertir un dato String(se recibe del Formulario) a tipo numerico agregarle antes el signo: "+"
-                quantity: parseInt(quantity.trim(), 10) //forma 2. de convertir un dato String(se recibe del Formulario) a tipo numerico con parseInt(recibe el valor, 10Base10)
-            }]); //product (varlor del campo de invoice) productValue(variable del useState)
-            
-
-            //Limpiar el formulario luego de haber enviado los datos
-/*          setProductValue('');
-            setPriceValue('');
-            setQuantityValue(''); 
-*/
-
-            //Limpiar el formulario usando el useState feneral para todos los campos
-            setFormItemsState({
-                product: '',
-                price: '',
-                quantity:'',
-            })
-
-            setCounter(counter+1); //incrementa el valor del conunter en 1
-            }
-    
-    
    return (
         <>
         <div className="container">
@@ -218,57 +129,31 @@ export const InvoiceApp = () => {
                            <CompanyView title="Datos de la Compania" company={company}/>
                         </div>
                     </div>
-                        <ListItemsView title="Productos de la Factura" items={items}/>
+                        {/* llama al compoente hijo ListItemsView se envia los valores, se envia el metodo handlerDelete, en cual desde el hijo ListItemsView, el padre(InvoiceApp) recibe el id del item a eliminar usando el metodo handlerDeleteItem(id) */}
+                        <ListItemsView title="Productos de la Factura" items={items} handlerDeleteItem ={ id => handlerDeleteItem(id) } />
                         <TotalView total={total} />
 
-                        <form className="w-50" onSubmit={ onInvoiceItemsSubmit }> 
+                        {/* Boton para mostrar u ocultar el formulario */}
+                        <button 
+                        className="btn btn-secondary"
+                        onClick={onActiveForm} //llama a la funcion que cambia el estado de activeForm, false no muestra el form y true muestra el form
+                        > 
+                        {/* Valida: si es diferente de activeForm "esta en false" muestra mensaje Agregar Item (el form no esta activo) si no estra true el form esta activo y muestra 'Ocultar Formulario' */}
+                        {!activeForm ? 'Agregar Item' : 'Cerrar Form'} 
+                        </button>
 
-                            <input type="text" 
-                                    name="product" 
-                                    value={product} //permite limpiar el dato del campo
-                                    placeholder="Product" 
-                                    className="form-control m-3" 
+                        {/* Valida si el formulario es false o no esta activo muestra '' "nada" si es True o esta activo, muestra el formulario. */}
+                        {!activeForm ? '' :
+//                       {/* Llama a la clase hija FormItemsView y se le pasa por medio de la variable handler la funcion handlerAddItems para agregar items al form*/}
+//                       {/* newItem recibe los datos "formItemsState" que el component hijo envia al padre y estos datos se pasa al metodo handlerAddItems que recibe newItem para agregar un nuevo item al formulario */}
+//                       {/* <FormItemsView handler = { (newItem) => handlerAddItems(newItem) } />  */}  {/* Forma1: el proceso del hijo recibe los datos que el padre necesita para agregarlo a la funcion handlerAddItems y crear un nuevo item */}
+                         <FormItemsView handler = { handlerAddItems } />  // {/* Forma2: optimizada */}
+                        }
 
-                            /*  //Ejemplo del onChange agregado en cada input del formulario
-                                    onChange={event => {console.log(event.target.value) //value es el valor, el target es el campo.
-                                    setProductValue(event.target.value); //Se guarda el valor(value) que aparece en el campo(target) product
-                                }}
-                            */
+                        {/* Forma 2 optimizada: Si no existe no muestre nada, o si es diferente a false que muestre el form */}
+                        {/*     {!activeForm || <FormItemsView handler={handlerAddItems}  /> }      */}
 
-                                //Input desacoplado: se llama a la funcion
-                                //onChange={event => {onProductChange(event)} //forma 1
-                                //onChange={onProductChange} //forma 2: Optimizada
-                                onChange={onInputChange} //forma 2: usando el useState general para todos los campos
-                            />
 
-                            <input type="text" 
-                                    name="price" 
-                                    value={price} //permite limpiar el dato del campo priceValue
-                                    placeholder="Price" 
-                                    className="form-control m-3"
-                                    
-                                    //Input desacoplado: se llama a la funcion
-                                    //onChange={ onPriceChange }    
-                                    
-                                    onChange={onInputChange} //forma 2: usando el useState general para todos los campos
-                            />
-                            <input type="text" 
-                                    name="quantity" 
-                                    value={quantity} //permite limpiar el dato del campo
-                                    placeholder="Quantity"
-                                    className="form-control m-3" 
-                                    //onChange={ onQuantityChange} 
-                                    onChange={onInputChange} //forma 2: usando el useState general para todos los campos
-                            />
-
-                            <button 
-                                type="submit" 
-                                className="btn btn-primary m-3"
-                                >
-                                    Nuevo Item
-                            </button>
-                            
-                        </form>
                     </div>
                 </div>
             </div>         
