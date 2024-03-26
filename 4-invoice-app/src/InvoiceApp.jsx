@@ -1,23 +1,62 @@
 
-import { getInvoice } from "./services/getInvoice"
+import { getInvoice, calculateTotal } from "./services/getInvoice"
 import { ClientView } from "./components/ClientView";
 import { CompanyView } from "./components/CompanyView";
 import { InvoiceView } from "./components/InvoiceView";
 import { ListItemsView } from "./components/ListItemsView";
 import { TotalView } from "./components/TotalView";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+const invoiceInitial = {
+    id: 0,
+    name: '',
+    client:{
+        name:'',
+        lastName: '',
+        address:{
+            country: '',
+            city:'',
+            street: '',
+            number: 0
+        },
+    },
+        company:{
+            name: '',
+            fiscalNumber: 0,
+        },
+        items:[] //item es un arreglo porque en la factura hay muchos items o articulos comprados   
+    }
 
 
 export const InvoiceApp = () => {
 
-    //const invoice = getInvoice(); //variable invoice guarda los datos de factura que se optiene por la clase service getInvoice()
+    //UseState para incrementar contador del id de producto
+    const[counter, setCounter] = useState(4); //incializa en 4
+
+    //Factura sea manejada por el estado de react
+    const [invoice, setInvoice] = useState(invoiceInitial); //El estado inicial del useState es la estructura o el json de la factura
+        
+
+    //Estado para guardar los item en la pagina
+    const[items, setItems] = useState([]); //items de la factura, inicializa con itemsInitial que es el alias de los items que viene de getInvoice de la factura.
+ 
+    //Esta forma de obtener la factura afecta en el rendimiento por cada cambio en el estado del campo hace una llamada y se necesita que al llenar el campo haga solo 1 llamada.
+    //const invoice = getInvoice();
+    //console.log(invoice);
+
+     //Estado para guardar los item en la pagina
+     //const[items, setItems] = useState(itemsInitial); //items de la factura, inicializa con itemsInitial que es el alias de los items que viene de getInvoice de la factura.
+ 
     //Las variable: id, name, client, et. guarda los datos de la factura que se optiene por la clase service getInvoice()
-    const {id, name, client, company, total, items:itemsInitial} = getInvoice();  //Usando desestructuracion del objeto obtenemos los datos y los guardamos en las variables.
+    //const {id, name, client, company, total, items:itemsInitial} = invoice;  //Usando desestructuracion del objeto obtenemos los datos y los guardamos en las variables.
     
+    const {id, name, client, company} = invoice;  //Usando UseEffect - Usando desestructuracion del objeto obtenemos los datos y los guardamos en las variables.
+    const [total, setTotal] = useState(0); //para calcular el total de los items
+
     //Desestructurar el objeto cliente obtenido de getInvoice() y se guarda la data en las variables: name:nameClient(alias xq name ya existe), lastaName, address
     //const{ name:nameClient, lastName, address } = client;   //se da un alias al campo name de cliente xq ya existe esa variable: name:nameClient,
 
-    //Desestructurar el objeto address de client obtenido de getInvoice() y se guarda la data en las variables: country, city, street, number 
+    //Desestructurar el objeto address de client obtenido de invoice() y se guarda la data en las variables: country, city, street, number 
     //const{ country, city, street, number } = address; 
 
     
@@ -42,12 +81,34 @@ export const InvoiceApp = () => {
     //Desestructuracion del objeto useState formItemsState y guarda los datos en las variables: product, price, quantity
     const {product, price, quantity} = formItemsState;
 
+    //Este componente solo se ejecuta una vez cuando se crea el componente. Obtendra las facturas
+    useEffect(() => {
+        const data = getInvoice(); //variable data guarda los datos de factura que se optiene por la clase service getInvoice()
+        console.log(data);
+        setInvoice(data); //en setInvoice guardammos la data que contiene las facturas obtenidas por getInvoice()
+        setItems(data.items);
+    }, []); //el [] vacio sig. que este efecto secundario (evento) del ciclo de vida cuando se crea el componente
 
-    //Estado para guardar los item en la pagina
-    const[items, setItems] = useState(itemsInitial); //items de la factura, inicializa con itemsInitial que es el alias de los items que viene de getInvoice de la factura.
- 
-    //UseState para incrementar contador del id de producto
-    const[counter, setCounter] = useState(4); //incializa en 4
+
+        useEffect(() => {
+            console.log('El precio cambio');
+
+        }, [price]) //este useEffect se ejecuta cuando el estado del campo precio cambia
+
+
+        //useEffect se ejecuta cuando cambia cualquier estado del campo del formulario
+        useEffect(() => {
+            console.log('El form cambio');
+
+        }, [formItemsState]) //Se define el campo "formItemsState" condicion para ejecutar el useEffect
+
+
+       //useEffect para cuando cambie la cantidad de items se recalcula el total
+        useEffect(() => {
+            setTotal(calculateTotal(items)); //Modifica el total con setTotal llama la funcion calculateTotal y le pasa los items para que calcule el total
+            //console.log('El form cambio');
+        }, [items]) //Se define el campo "items" condicion para ejecutar el useEffect
+
 
  /*   //Reduccion de estas 3 funciones a una sola 
     //Funcion para cambiar el evento del producto usando Event sin desestructurarlo
@@ -61,7 +122,7 @@ export const InvoiceApp = () => {
         console.log(target.value)//value es el valor, el target es el campo.
         setPriceValue(target.value); //Se guarda el valor(value) que aparece en el campo(target) price
     }
-    
+
     //Funcion para cambiar el evento de la cantidad
     const onQuantityChange = ({ target }) =>{ //desestructuracion de event y extraer {target} del obejto event
         console.log(target.value)//value es el valor, el target es el campo.
@@ -71,8 +132,8 @@ export const InvoiceApp = () => {
 
         //Funcion para modificar el estado completo del campo. cambiar el evento del los campos product, price y quantity del formulario 
         const onInputChange = ({ target:{ name, value }}) => { //Del objeto event se destructuro el target y del target(campo del form) se desetructuro el name y value
-            console.log(name) //value es el valor del campo, el target es el campo.
-            console.log(value)
+            //console.log(name) //value es el valor del campo, el target es el campo.
+            //console.log(value)
 
             setFormItemsState({ //cambiamos el estado del campo
                 ...formItemsState, //el arreglo que no se esta modificando

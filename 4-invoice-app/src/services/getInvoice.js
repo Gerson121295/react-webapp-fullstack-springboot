@@ -14,12 +14,23 @@ export const getInvoice = () => {
 
     //Forma2: Calcular el total de la factura
     //items es un arreglo por lo que se usa el metodo reduce
-    const total = invoice.items
+/*    const total = invoice.items
     .map(item => item.price * item.quantity) //items es un objeto por lo que clonamos el objeto con map y operamos sus datos y este nuevo arreglo se convierte en el resultado de precio * cantidad
     .reduce((accumulator, currentValue) => accumulator + currentValue, 0) //El acumulador es el total que parte en 0,  y currentValues es: item.price * item.quantity; //el ultimo argumento indica que el acumulador inicia en 0
 
     return {...invoice, total}; //crea un clon de la factura y retorna sus elementos de la factura. Al agregar: "total:total"  total de la propiedad de la factura y total de la variable se reduce agregando total.
+*/
 
-
+    //Forma 3 llamando una funcion:
+    const total = calculateTotal(invoice.items)
+        return {...invoice, total}; //crea un clon de la factura y retorna sus elementos de la factura. Al agregar: "total:total"  total de la propiedad de la factura y total de la variable se reduce agregando total.
 
 }
+
+//Funcion para calcular el total usando el useEffect
+export const calculateTotal = (items = []) => {
+    return items
+    .map(item => item.price * item.quantity) //items es un objeto por lo que clonamos el objeto con map y operamos sus datos y este nuevo arreglo se convierte en el resultado de precio * cantidad
+    .reduce((accumulator, currentValue) => accumulator + currentValue, 0) //El acumulador es el total que parte en 0,  y currentValues es: item.price * item.quantity; //el ultimo argumento indica que el acumulador inicia en 0
+}
+
