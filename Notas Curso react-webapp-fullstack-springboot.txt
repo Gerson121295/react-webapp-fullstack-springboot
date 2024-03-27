@@ -71,15 +71,77 @@ Ir a https://getbootstrap.com/  --> Descargas --> copiar(menos el script) los CD
 y tambien copiar el script popperjs dentro del body (sirve para menus desplegables)
 
 
+-- Creando proyecto CartApp
+
+PS C:\Users\Escritorio\react-webapp-fullstack-springboot> npm create vite
+√ Project name: ... 5-cart-app  //nombre del proyecto
+√ Select a framework: » React	//elegir React
+√ Select a variant: » JavaScript	//Elegir JavaScript
+
+Done. Now run:
+  cd 5-cart-app	//Ingresar a la carpeta del proyecto creado
+  npm install  	//Ejecutar para instalar las dependencias
+  npm run dev 	//Levantar la applicacion
+
+-- Agregar BootStrap al proyecto
+
+Ir a https://getbootstrap.com/  --> Descargas --> copiar(menos el script) los CDN via jsDelivr 
+-->  pegar el CDN en el index.html dentro de la etiqueta head. 
+y tambien copiar el script popperjs dentro del body (sirve para menus desplegables)
 
 
+-- Informacion sobre Guardar los items del carrito en el sessionStorage
+https://developer.mozilla.org/es/docs/Web/API/Window/sessionstorage
+
+LocalStorage: SI queremos que perdure la informacion aun cerrando el navegador
+SessionStorage: SI queremos que perdure la informacion unicamente cuando 
+		esta abierto el navegador aun asi recarquemos la pagina la info no se pierde
+Para implementarlo cambiar Local por Session _Storage
 
 
+// Almacena la información en sessionStorage
+sessionStorage.setItem("key", "value");
+
+// Obtiene la información almacenada desde sessionStorage
+var data = sessionStorage.getItem("key");
 
 
+Que es Reducer?
+- Es una funcio normal que recibe 2 argumentos
+	const productReducer = (state, action) => {		
+	};
 
+	//Otro ejemplo
+const initialState = [
+	{ 
+	 id:1,
+	 name: 'Teclado',
+	 description: 'sony 2023',
+	 price: 1000
+	},
+	{ 
+	 id:2,
+	 name: 'Samsung Tv',
+	 description: '20 pulgadas',
+	 price: 4000
+	},
+]
 
+//Permite manejar mas estados que a diferencia del useState que solo permite manejar 1
+const productReducer = (state = initialState, action) => {
+	switch(action.type){
+	case "add":
+	case "update":
+	case "remove":
+	default:
+	return state;
+	}		
+};
 
+- Es sincrona
+- Debe devolver un nuevo estado.
+- No debe de tener dependencias con otras funciones
+- Debe tener una o mas acciones.
 
 
 
