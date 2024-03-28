@@ -1,11 +1,12 @@
 
-import { useReducer} from 'react';
+import { useEffect, useReducer} from 'react';
 import { CartView } from './components/CartView';
 import {CatalogView} from './components/CatalogView'
 import {itemsReducer} from './reducer/itemsReducer'
+import { AddProductCart, DeleteProductCart, UpdateQuantityProductCart } from './reducer/itemsActions';
 
 //Arreglos de la estructura del Json del CartItems
-//Obtiene la información almacenada desde sessionStorage definida en CartView donde 'cart' es la key para acceder
+//Obtiene la información almacenada desde sessionStorage definida en CartView(no usando useReducer, reducer se define hook en cartApp) donde 'cart' es la key para acceder
 // el getItem devuelve un String por lo que se debe convertir de String a un objeto usando JSON.parse()
 const initialCartItems = JSON.parse(sessionStorage.getItem('cart')) || []; //InitialCartItems mostrará los items con getItem o (||) muestra vacio el arreglo
 
@@ -30,6 +31,13 @@ export const CartApp = () => {
 
   //Manejando los stados con Hook useReducer - Despachando acciones. UseReducer maneja muchos estados: cartItems(es el estado), dispatch(para modificar los estados) y useReducer(itemsReducer, initialCartItems) recibe la funcion de los casos y datos de iniciales.
   const [cartItems, dispatch] = useReducer(itemsReducer, initialCartItems); //dispacher maneja los estados, useReducer recibe como parametro la funcion "itemsReducer" creada, y recibe los datos iniciales de los estados "initialCartItem". 
+
+   //UseEffect se ejecuta cuando cambie los cartItems y guarde en Session Storage
+   useEffect(() => {
+    //para que perdure la informacion unicamente cuando esta abierto el navegador aun asi recarquemos la pagina la info no se pierde
+    sessionStorage.setItem("cart", JSON.stringify(cartItems)); //Recibe una key('cart') y solo guarda valores string por lo que items que es un objeto se convierte a string con JSON.stringify que convierte un objeto en una cadena
+  }, [cartItems]);
+
 
   //Funcion para agregar productos al carro
   const handlerAddProductCart = (product) => {
@@ -62,7 +70,7 @@ export const CartApp = () => {
        //Forma 2 de actualizar la cantidad de los productos usando map mas mejor
       dispatch(
         {
-          type:'UpdateQuantityProductCart',
+          type:UpdateQuantityProductCart, //Case definido en la funcion itemsReducer y itemsActions
           payload: product, //el payload es el objeto a enviar en la funcion itemsReducer
         }
       );
@@ -80,7 +88,7 @@ export const CartApp = () => {
 */
     //Usando useReducer
     dispatch({
-      type: 'AddProductCart',
+      type: AddProductCart, //Case definido en la funcion itemsReducer y itemsActions
       payload: product,
     }); 
 
@@ -99,7 +107,7 @@ export const CartApp = () => {
   //Usando useReducer
   dispatch(
     {
-      type:'DeleteProductCart',
+      type:DeleteProductCart, //Case definido en la funcion itemsReducer y itemsActions
       payload: id, //el payload es el objeto o atributo a enviar en la funcion itemsReducer
     }
   )

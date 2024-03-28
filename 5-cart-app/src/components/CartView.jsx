@@ -12,10 +12,13 @@ export const CartView = ({handlerDelete, items}) => { //recibe props items datos
     setTotal(
       calculateTotal(items) //Funcion calcula el total de los products definida en productService
     );
+    //Code Cuando se utiliza useState
     //para que perdure la informacion unicamente cuando esta abierto el navegador aun asi recarquemos la pagina la info no se pierde
-    sessionStorage.setItem("cart", JSON.stringify(items)); //Recibe una key('cart') y solo guarda valores string por lo que items que es un objeto se convierte a string con JSON.stringify que convierte un objeto en una cadena
+    //sessionStorage.setItem("cart", JSON.stringify(items)); //Recibe una key('cart') y solo guarda valores string por lo que items que es un objeto se convierte a string con JSON.stringify que convierte un objeto en una cadena
   }, [items]);
 
+
+  
   //Funcion para eliminar un product del carro de compras
   const onDeleteProduct = (id) => {
     //console.log('Eliminando Product')
