@@ -1,8 +1,7 @@
 
-import { useReducer} from 'react';
+import { useState } from 'react';
 import { CartView } from './components/CartView';
 import {CatalogView} from './components/CatalogView'
-import {itemsReducer} from './reducer/itemsReducer'
 
 //Arreglos de la estructura del Json del CartItems
 //Obtiene la información almacenada desde sessionStorage definida en CartView donde 'cart' es la key para acceder
@@ -26,10 +25,11 @@ Para implementarlo cambiar "Local" por "Session"  "session"_Storage
 export const CartApp = () => {
 
   //useState para Manejar el estado del carro de compras. useState solo maneja 1 estado: en useState: cartItems(es el estado), setCartItems(es para modificar el estado) y useState(initialCartItems) datos de inicializacion del estado.
-  //const [cartItems, setCartItems] = useState(initialCartItems) // se puede agregar aqui: || []); //se inicializa con el json de cartItems
+  const [cartItems, setCartItems] = useState(initialCartItems) // se puede agregar aqui: || []); //se inicializa con el json de cartItems
 
   //Manejando los stados con Hook useReducer - Despachando acciones. UseReducer maneja muchos estados: cartItems(es el estado), dispatch(para modificar los estados) y useReducer(itemsReducer, initialCartItems) recibe la funcion de los casos y datos de iniciales.
-  const [cartItems, dispatch] = useReducer(itemsReducer, initialCartItems); //dispacher maneja los estados, useReducer recibe como parametro la funcion "itemsReducer" creada, y recibe los datos iniciales de los estados "initialCartItem". 
+  //const [cartItems, dispatch] = useReducer(itemsReducer, initialCartItems); //dispacher maneja los estados, useReducer recibe como parametro la funcion "itemsReducer" creada, y recibe los datos iniciales de los estados "initialCartItem". 
+
 
   //Funcion para agregar productos al carro
   const handlerAddProductCart = (product) => {
@@ -37,9 +37,8 @@ export const CartApp = () => {
     //Actualizar la cantidad de product
     const hasItem = cartItems.find((i) => i.product.id === product.id); //item(i), si el id del product del item === es igual al id que pasamos por argumento, si el item que se pasa por paramtro ya existe en los items,
     if(hasItem){//Evalua Si el producto a agregar al carro ya existe en el list del carro, aumenta la cantidad del producto
-  
-      //Usando useState
-/*      //Forma 1 de actualizar la cantidad de los productos usando filter
+      
+ /*      //Forma 1 de actualizar la cantidad de los productos usando filter
         setCartItems([
         ...cartItems.filter((i) => i.product.id !== product.id), //Si ya existe, Lo eliminamos con filter que crea un nuevo array donde incluye todos los items menos el id del producto que se recibe como parametro
         {
@@ -48,8 +47,7 @@ export const CartApp = () => {
         }
       ]) 
 */
-
-/*       //Forma 2 de actualizar la cantidad de los productos usando map mas mejor
+      //Forma 2 de actualizar la cantidad de los productos usando map mas mejor
       setCartItems(
         cartItems.map((i) => {  //Si ya existe, map devuelve un nuevo arreglo con los cambios
               if(i.product.id === product.id){ //recorre por cada item de productos seleccionados para ver si el id del producto del item es igual al id del producto que recibe como parametro si es igual aumenta la cantidad del product
@@ -57,19 +55,9 @@ export const CartApp = () => {
               }
               return i; //el map siempre devuelve el objeto
           })
-*/
-          //Usando useReducer
-       //Forma 2 de actualizar la cantidad de los productos usando map mas mejor
-      dispatch(
-        {
-          type:'UpdateQuantityProductCart',
-          payload: product, //el payload es el objeto a enviar en la funcion itemsReducer
-        }
-      );
-    
-    }else{ //Evalua Si el producto a agregar al carro no existe en el list del carro. Crea un nuevo Item
+        ) 
 
-/*  //Usando useState
+    }else{ //Evalua Si el producto a agregar al carro no existe en el list del carro. Crea un nuevo Item
       setCartItems([
         ...cartItems,  // ...cartItems (desestructurar los elementos que ya se tienen para no perderlos) y crear un nuevo arreglo y agregar un nuevo item que fue seleccionado
       {
@@ -77,32 +65,15 @@ export const CartApp = () => {
         quantity: 1,
       }
     ])
-*/
-    //Usando useReducer
-    dispatch({
-      type: 'AddProductCart',
-      payload: product,
-    }); 
 
     }
   }
 
   //Funcion para eliminar producto del carro. Actualizamos los items del carro con 1 menos
   const handlerDeleteProductCart = (id) => { //recibe el id del product a eliminar
-
-/* //Usando useState
     setCartItems([
     ...cartItems.filter((i) => i.product.id !== id) //Lo eliminamos con filter que crea un nuevo array donde incluye todos los items menos el id del producto que se recibe como parametro
   ]);
-*/
-
-  //Usando useReducer
-  dispatch(
-    {
-      type:'DeleteProductCart',
-      payload: id, //el payload es el objeto o atributo a enviar en la funcion itemsReducer
-    }
-  )
 }
 
     return (

@@ -143,6 +143,10 @@ const productReducer = (state = initialState, action) => {
 - No debe de tener dependencias con otras funciones
 - Debe tener una o mas acciones.
 
+- UseReducer sirve para manejar el estado de forma centralizada donde se tiene muchas funcionalidades
+
+https://es.legacy.reactjs.org/docs/hooks-reference.html#usereducer
+https://es.react.dev/reference/react/useReducer
 
 
 
