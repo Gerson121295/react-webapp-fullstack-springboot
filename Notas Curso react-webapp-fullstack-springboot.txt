@@ -150,9 +150,12 @@ https://es.react.dev/reference/react/useReducer
 
 
 
+-- Rutas con React Router: https://reactrouter.com/en/main
+- Instalar la dependencia en la terminal en la ruta del proyecto: npm install react-router-dom
 
-
-
+-- Agregamos un Navbar de Bootstrap al proyecto
+- Ir a docs luego Components y elegir Navbar
+- El que se elijio fue. Nav: https://getbootstrap.com/docs/5.3/components/navbar/#nav
 
 
 

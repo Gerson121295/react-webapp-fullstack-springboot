@@ -1,11 +1,15 @@
 import PropTypes from 'prop-types'
 import { useEffect, useState } from 'react';
 import { calculateTotal } from '../services/productService';
+import { useNavigate } from 'react-router-dom';
 
 export const CartView = ({handlerDelete, items}) => { //recibe props items datos de products y la funcion handlerDelete para eliminar product del padre CartApp
   
   //Actualizar el total del carrito
   const [total, setTotal] = useState(0);
+
+  //Navegacion con hook useNavigate
+  const navigate = useNavigate();
 
   //UseEffect se ejecuta cuando cambie los items que recibe del padre
   useEffect(() => {
@@ -25,6 +29,11 @@ export const CartView = ({handlerDelete, items}) => { //recibe props items datos
     handlerDelete(id);
   }
   
+  //Funcion onCatalog que redirige al catalogo de products
+  const onCatalog = () =>{
+    navigate('/catalog');
+  }
+
   return (
     <>
       <h3>Carro de Compras</h3>
@@ -70,6 +79,12 @@ export const CartView = ({handlerDelete, items}) => { //recibe props items datos
           </tr>
         </tfoot>
       </table>
+      <button
+        className='btn btn-success'
+        onClick={onCatalog} //al dar clic llama a la funcion onCatalog que redirige al catalogo de products
+      >
+        Seguir Comprando
+      </button>
     </>
   );
 }
